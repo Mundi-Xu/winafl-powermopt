@@ -10,10 +10,12 @@ FUZZER_STATS_RX = re.compile(r'([a-zA-Z_]+)\s+:\s+(.+?)\n')
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--summary', default=False, action='store_true',
+    parser.add_argument('-s',
+                        '--summary',
+                        default=False,
+                        action='store_true',
                         help='skip all per-fuzzer trivia and show just the \
-                        summary results.'
-                        )
+                        summary results.')
     parser.add_argument('afl_sync_dir', help='path to afl sync directory')
 
     args = parser.parse_args()
@@ -78,7 +80,9 @@ def main():
         return 1
 
     if os.path.isdir(os.path.join(args.afl_sync_dir, 'queue')):
-        print("[-] Error: parameter is an individual output directory, not a sync dir.")
+        print(
+            "[-] Error: parameter is an individual output directory, not a sync dir."
+        )
         return 1
 
     print("status check tool for afl-fuzz by <lcamtuf@google.com>\n")
@@ -110,19 +114,22 @@ def main():
             run_hours = int((run_time / 60 / 60) % 24)
 
             if verbose:
-                print(">>> {} ({} days, {} hours) <<<\n".
-                      format(stats['afl_banner'], run_days, run_hours))
+                print(">>> {} ({} days, {} hours) <<<\n".format(
+                    stats['afl_banner'], run_days, run_hours))
 
             if not is_process_running(stats['fuzzer_pid']):
                 if verbose:
-                    print("  Instance is dead_count or running remotely, skipping.\n")
+                    print(
+                        "  Instance is dead_count or running remotely, skipping.\n"
+                    )
                 dead_count += 1
                 continue
 
             alive_count += 1
             execs_done = stats['execs_done']
             exec_sec = float(execs_done) / run_time
-            path_percent = (float(stats['cur_path']) * 100) / stats['paths_total']
+            path_percent = (float(stats['cur_path']) *
+                            100) / stats['paths_total']
 
             total_time += run_time
             total_eps += exec_sec
@@ -132,14 +139,16 @@ def main():
             total_pfav += stats['pending_favs']
 
             if verbose:
-                print("  cycle {}, lifetime speed {:.2f} exec/sec, path {}/{} {:.2f}%".
-                      format(stats['cycles_done'], exec_sec, stats['cur_path'],
-                             stats['paths_total'], path_percent))
+                print(
+                    "  cycle {}, lifetime speed {:.2f} exec/sec, path {}/{} {:.2f}%"
+                    .format(stats['cycles_done'], exec_sec, stats['cur_path'],
+                            stats['paths_total'], path_percent))
 
                 if stats['unique_crashes'] == 0:
-                    print("  pending {}/{}, coverage {}, no crashes yet".
-                          format(stats['pending_favs'], stats['pending_total'],
-                                 stats['bitmap_cvg']))
+                    print(
+                        "  pending {}/{}, coverage {}, no crashes yet".format(
+                            stats['pending_favs'], stats['pending_total'],
+                            stats['bitmap_cvg']))
                 else:
                     print("  pending {}/{}, coverage {}, crash count {} (!)".
                           format(stats['pending_favs'], stats['pending_total'],
@@ -147,7 +156,8 @@ def main():
 
                 print("")
         except UnicodeDecodeError:
-            print("error in parsing fuzzer_stat: {}, seems to be corrupt?".format(stats_path))
+            print("error in parsing fuzzer_stat: {}, seems to be corrupt?".
+                  format(stats_path))
             continue
 
     total_days = int(total_time / 60 / 60 / 24)
@@ -160,12 +170,16 @@ def main():
     print("       Fuzzers alive : {}".format(alive_count))
 
     if dead_count > 0:
-        print("      Dead or remote : {} (excluded from stats)".format(dead_count))
+        print("      Dead or remote : {} (excluded from stats)".format(
+            dead_count))
 
-    print("      Total run time : {} days, {} hours".format(total_days, total_hours))
-    print("         Total execs : {} million".format(int(total_execs / 1000 / 1000)))
+    print("      Total run time : {} days, {} hours".format(
+        total_days, total_hours))
+    print("         Total execs : {} million".format(
+        int(total_execs / 1000 / 1000)))
     print("    Cumulative speed : {:.2f} execs/sec".format(total_eps))
-    print("       Pending paths : {} faves, {} total".format(total_pfav, total_pending))
+    print("       Pending paths : {} faves, {} total".format(
+        total_pfav, total_pending))
     if alive_count > 0:
         print("  Pending per fuzzer : {:.2f} faves, {:.2f} total (on average)".
               format(total_pfav / float(alive_count),

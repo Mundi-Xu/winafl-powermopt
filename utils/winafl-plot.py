@@ -111,14 +111,16 @@ def main():
     # write html file
     index_html = os.path.join(args.out_dir, 'index.html')
     with open(index_html, 'wb') as f:
-        f.write(TEMPLATE.format(outdir=args.out_dir,
-                                fuzzer_dir=args.sync_dir,
-                                date=date,
-                                banner=banner).encode('utf-8'))
+        f.write(
+            TEMPLATE.format(outdir=args.out_dir,
+                            fuzzer_dir=args.sync_dir,
+                            date=date,
+                            banner=banner).encode('utf-8'))
 
     tmp_file = tempfile.NamedTemporaryFile(delete=False)
-    tmp_file.write(GNUPLOT_CMDS.format(outdir=args.out_dir,
-                                       fuzzer_dir=args.sync_dir).encode('utf-8'))
+    tmp_file.write(
+        GNUPLOT_CMDS.format(outdir=args.out_dir,
+                            fuzzer_dir=args.sync_dir).encode('utf-8'))
     tmp_file.flush()
 
     # run gnuplot
@@ -127,7 +129,9 @@ def main():
     except subprocess.CalledProcessError as e:
         print("Error: failed to run gnuplot, output = {}".format(e))
     except OSError:
-        print("Error: gnuplot was not found, make sure that gnuplot is installed and in PATH")
+        print(
+            "Error: gnuplot was not found, make sure that gnuplot is installed and in PATH"
+        )
 
     try:
         os.unlink(tmp_file.name)
