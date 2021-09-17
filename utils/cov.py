@@ -23,7 +23,7 @@ else:
                 testcases.append(testcase)
                 sum += 1
 
-    i = 0
+    i = 1
     for testcase in testcases:
         print("\n[", i, "of", sum, "] Running DynamoRIO for testcase: ",
               testcase)
